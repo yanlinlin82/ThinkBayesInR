@@ -9,3 +9,9 @@ mixes <- list("Bowl 1" = c("vanilla" = .75, "chocolate" = .25),
 cookie <- pmf(hypos, mixes)
 cookie <- update(cookie, "vanilla")
 print(cookie)
+
+cat("------\n")
+
+cookie <- pmf(hypos, mixes)
+cookie <- update(cookie, c("vanilla", "chocolate", "vanilla"))
+print(cookie)
