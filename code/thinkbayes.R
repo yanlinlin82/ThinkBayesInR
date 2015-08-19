@@ -12,8 +12,16 @@ normalize.pmf <- function(m) {
 }
 
 update.pmf <- function(m, data) {
-    for (x in data) {
-        m$items <- m$items * sapply(m$likes[names(m$items)], "[", x)
+    if (is.function(m$likes)) {
+        for (x in data) {
+            for (hypo in names(m$items)) {
+                m$items[hypo] <- m$items[hypo] * m$likes(data = data, hypo = hypo)
+            }
+        }
+    } else {
+        for (x in data) {
+            m$items <- m$items * sapply(m$likes[names(m$items)], "[", x)
+        }
     }
     m <- normalize.pmf(m)
     m
