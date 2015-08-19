@@ -17,6 +17,6 @@ likes <- function(data, hypo) {
     }
 }
 
-monty <- pmf(hypos, likes)
-monty <- update(monty, "B")
+monty <- Pmf(hypos, likes)
+monty <- monty %>% Update("B")
 print(monty)

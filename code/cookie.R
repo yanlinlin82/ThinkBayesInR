@@ -5,11 +5,16 @@
 # 现在设想你在不看的情况下随机地挑一个碗拿一块饼，得到了一块香草曲奇饼。我们的问题是：
 # 取到的香草曲奇饼来自碗1的概率是多少？
 
-cookie <- c("Bowl 1" = .5, "Bowl 2" = .5) # 先验概率
+source("thinkbayes.R")
 
-cookie["Bowl 1"] <- cookie["Bowl 1"] * .75 # 先验分别乘以对应的似然度
-cookie["Bowl 2"] <- cookie["Bowl 2"] * .5
+cookie <- Pmf() %>%
+    Set("Bowl 1", .5) %>% # 先验概率
+    Set("Bowl 2", .5)
 
-cookie <- cookie / sum(cookie)
+cookie <- cookie %>%
+    Mult("Bowl 1", .75) %>% # 先验分别乘以对应的似然度
+    Mult("Bowl 2", .5)
+
+cookie <- cookie %>% Normalize()
 
 print(cookie)

@@ -1,29 +1,52 @@
-pmf <- function(hypos, likes) {
+library("magrittr")
+
+Set       <- function(x, ...) UseMethod("Set")
+Incr      <- function(x, ...) UseMethod("Incr")
+Mult      <- function(x, ...) UseMethod("Mult")
+Normalize <- function(x, ...) UseMethod("Normalize")
+Update    <- function(x, ...) UseMethod("Update")
+
+Pmf <- function(hypos = NULL, likes = NULL) {
     m <- list(items = rep(1, length(hypos)), likes = likes)
     names(m$items) <- hypos
     class(m) <- "pmf"
-    m <- normalize.pmf(m)
+    m <- Normalize(m)
     m
 }
 
-normalize.pmf <- function(m) {
+Set.pmf <- function(m, hypo, value = 0) {
+    m$items[hypo] <- value
+    return(m)
+}
+
+Incr.pmf <- function(m, hypo, term = 1) {
+    m$items[hypo] <- m$items[hypo] + term
+    return(m)
+}
+
+Mult.pmf <- function(m, hypo, factor) {
+    m$items[hypo] <- m$items[hypo] * factor
+    return(m)
+}
+
+Normalize.pmf <- function(m) {
     m$items <- m$items / sum(m$items)
-    m
+    return(m)
 }
 
-update.pmf <- function(m, data) {
-    if (is.function(m$likes)) {
-        for (x in data) {
-            for (hypo in names(m$items)) {
-                m$items[hypo] <- m$items[hypo] * m$likes(data = data, hypo = hypo)
+Update.pmf <- function(m, ...) {
+    dataset <- list(...)
+    stopifnot(length(dataset) > 0)
+    for (data in dataset) {
+        for (hypo in names(m$items)) {
+            if (is.function(m$likes)) {
+                m$items[hypo] <- m$items[hypo] * m$likes(hypo = hypo, data = data)
+            } else {
+                m$items[hypo] <- m$items[hypo] * m$likes[[hypo]][[data]]
             }
         }
-    } else {
-        for (x in data) {
-            m$items <- m$items * sapply(m$likes[names(m$items)], "[", x)
-        }
     }
-    m <- normalize.pmf(m)
+    m <- Normalize(m)
     m
 }
 
