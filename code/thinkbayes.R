@@ -15,17 +15,17 @@ Pmf <- function(hypos = NULL, likes = NULL) {
 }
 
 Set.pmf <- function(m, hypo, value = 0) {
-    m$items[hypo] <- value
+    m$items[as.character(hypo)] <- value
     return(m)
 }
 
 Incr.pmf <- function(m, hypo, term = 1) {
-    m$items[hypo] <- m$items[hypo] + term
+    m$items[as.character(hypo)] <- m$items[as.character(hypo)] + term
     return(m)
 }
 
 Mult.pmf <- function(m, hypo, factor) {
-    m$items[hypo] <- m$items[hypo] * factor
+    m$items[as.character(hypo)] <- m$items[as.character(hypo)] * factor
     return(m)
 }
 
@@ -42,7 +42,7 @@ Update.pmf <- function(m, ...) {
             if (is.function(m$likes)) {
                 m$items[hypo] <- m$items[hypo] * m$likes(hypo = hypo, data = data)
             } else {
-                m$items[hypo] <- m$items[hypo] * m$likes[[hypo]][[data]]
+                m$items[hypo] <- m$items[hypo] * m$likes[[hypo]][[as.character(data)]]
             }
         }
     }
